@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <style type="text/css">
+        .item {
+            width: 150px;
+            height: 150px;
+            background-size:100%;
+            background-repeat: no-repeat;
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            height: 200px;
+            width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .active{
+            border:  2px solid green;
+        }
+        .btn{
+            font-size: 50px;
+            font-family: arial;
+            border-radius: 30px;
+            background-color: #A09884;
+            padding: 30px;
+            position: absolute;
+            top: 200px;
+            left: 450px;
+            text-align: center;
+        }
+        .game-start{
+            display: flex;
+            background: url(2.jpg) no-repeat center center fixed;
+            height: 800px;
+            padding: 50px;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        .game_info{
+            display: none;
+            font-size: 30px;
+            font-family: arial;
+            border-radius: 30px;
+            background-color: #A09884;
+            padding: 30px;
+            text-align: center;
+            width: 300px;
+            height: 700px;
+        }
+        .thanks{
+            display: none;
+            position: absolute;
+            top: 200px;
+            left: 550px;
+            font-size: 30px;
+            font-family: arial;
+            border-radius: 30px;
+            background-color: #A09884;
+            padding: 30px;
+            text-align: center;
+            width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-start">
+        <div>
+            <button class="btn">Сыграйте в игру "Угадай где?" <br> вам нужно набрать <br> 8 совпадений за 15 секунд.</button> 
+            
+        </div>
+        
+        <div class="game_info">
+            <p class="">Собрано очков: <span class="score">0</span></p>
+        </div>
+        
+
+        <div class="row">
+        </div>
+        <div class="thanks">Спасибо за то, что сыграли в эту простую игру) 
+            <p>Меня зовут Алена, я леплю бомбочки для ванн и варю бальзам для губ,<br> зайдите на мою страницу в <a href="https://www.instagram.com/vodaimaslo/">vodaimaslo</a> </p>
+            <p>в свободное время, по мере вдохновения, пишу разный код. Ознакомиться с моими работами можете <a href="">здесь)</a>
+            </p>
+              </div>
+        <div class="game_info">
+            <p class="info_text"></p>
+            <img class="info_image" style="width: 200px; height: 200px;">
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+    let score = document.querySelector(".score");
+    let btn = document.querySelector(".btn");
+    let game_info =document.querySelectorAll(".game_info");
+    let info_text = document.querySelector(".info_text");
+    let info_image = document.querySelector(".info_image")
+    let thanks = document.querySelector(".thanks");
+    let score_num = 0;
+    //див-родитель
+    let row = document.querySelector(".row");
+
+    //хранение картинок
+    let images = ["3.JPG","5.JPG", "9.JPG","11.JPG", "12.JPG", "13.png", "14.png", "15.png", "3.JPG","5.JPG",  "9.JPG", "11.JPG", "12.JPG", "13.png", "14.png", "15.png"];
+
+    let stories = [
+    "Фотография с  фотосессии бомбочек на природе, это один из первых образцов диаметром 8 см",  
+    "Некоторые бомбочки украшались полевыми цветами, и даже теми, что растут у нас на даче",
+    "На этой фотографии всем полюбившийся бальзам для губ с пчелиным воском и маслом ши, незаменимый друг во все времена", 
+    "Это первая фотография бомбочек, тогда они были диметром 3 см и были сделаны в качестве тестовых", 
+
+    "Здесь лежат бомбочки с первого оптового заказа, в то время бомбочки продавались в крафт пакете с высушенными лепестками роз", 
+    "Образец мыла из основы, которому я доверяю, не пользуюсь промышленным мылом уже довольно долгое время",
+    "Мой бальзамчик побывал на фотосессии у @verdana_smm, не правда ли получились прекрасные фото)" ,
+    "Двухцветные бомбочки гораздо сложнее делать, и дело здесь в правильном сочетании цветов)"];
+
+    //let images2 = ["url(3.JPG)","url(5.JPG)", "url(9.JPG)","url(11.JPG)", "url(12.JPG)", "url(13.png)", "url(14.png)", "url(15.png)"];
+
+    let images2 = ["3.JPG","5.JPG", "9.JPG","11.JPG", "12.JPG", "13.png", "14.png", "15.png"];
+
+    let past_item = null;//сохраняем наше 1ое нажатие
+
+    let random = function(arg){
+        let rand = Math.round(Math.random()*arg);
+        return rand;
+    }
+
+    let endGame = function(){
+        alert("время вышло")
+        row.style.display = "none"
+    }
+
+    btn.onclick = function(){
+        game_info[0].style.display = "block";
+        game_info[1].style.display = "block";
+        for(let i = 0; i< 16; i++){
+            let index = random(images.length-1);//случ число из 0-15
+            let image = document.createElement("div");
+            row.appendChild(image);
+            image.classList.add("item");
+            image.style.backgroundImage = "url( " + images[index] + " )";
+            image.image = images[index];
+            images.splice(index, 1);
+            image.onclick = function(){
+                image.classList.add("active");
+                if(past_item == null){
+                    past_item = image;
+                }
+                else if(image.image == past_item.image){
+                    past_item.style.opacity = "0";
+                    image.style.opacity = "0";
+                    for(let i = 0;i<8; i++){
+                        if (image.image == images2[i]) {
+                            info_text.innerHTML = stories[i];
+                            info_image.src = images2[i];
+                        }
+                    }
+                    
+                    
+                    
+                    score_num = score_num + 1;
+                    score.innerHTML = score_num;
+                    past_item.classList.remove("active");
+                    image.classList.remove("active");
+                    past_item = null;
+                    if(score_num == 8){
+                        thanks.style.display = "block"
+                    }
+                    
+                    
+                }else if(image.image != past_item.image){
+                    past_item.classList.remove("active");
+                    image.classList.remove("active");
+                    past_item = null;
+                }
+                
+            }
+        }
+
+        //setTimeout(endGame, 15000);
+        btn.style.display = "none";
+
+    }
+
+    
+
+    
+
+    </script>
+</body>
+</html>
